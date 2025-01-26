@@ -15,5 +15,5 @@ public class Data {
 
     public final static List<String> QUESTIONS = Arrays.asList("arithmetic", "algebra", "geometry", "trigonometry", "calculus");
 
-
+    public final static Exam EXAM = new Exam(8L, "Physics");
 }

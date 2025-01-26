@@ -8,6 +8,11 @@ import java.util.concurrent.TimeUnit;
 public class ExamRepositoryOther implements ExamRepository {
 
     @Override
+    public Exam save(Exam exam) {
+        return null;
+    }
+
+    @Override
     public List<Exam> findAll() {
         try {
             TimeUnit.SECONDS.sleep(5);

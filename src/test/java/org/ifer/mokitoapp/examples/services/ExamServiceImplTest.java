@@ -6,7 +6,12 @@ import org.ifer.mokitoapp.examples.repositories.ExamRepositoryOther;
 import org.ifer.mokitoapp.examples.repositories.QuestionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
 
@@ -16,22 +21,62 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class) // con esto no hace falta el @BeforeEach de abajo porque:
+        /*
+         * 1) Habilita la integración de Mockito en JUnit 5:
+         * - JUnit 5 utiliza la API de extensions para agregar funcionalidades adicionales a las pruebas.
+         * - MockitoExtension es una extensión oficial de Mockito para JUnit 5 que permite usar anotaciones
+         *   como @Mock, @InjectMocks, @Spy, etc., sin necesidad de llamar manualmente a
+         *   MockitoAnnotations.openMocks(this).
+         *
+         * 2) Inicializa automáticamente los mocks:
+         * - Cuando se usa @ExtendWith(MockitoExtension.class), Mockito se encarga de inicializar los objetos
+         *   anotados con @Mock, @Spy, etc., antes de ejecutar cada prueba.
+         *
+         * 3) Realiza la inyección de dependencias automáticamente:
+         * - Si tienes un objeto anotado con @InjectMocks, Mockito inyectará automáticamente los mocks
+         *   (anotados con @Mock) en ese objeto.
+         *
+         */
 class ExamServiceImplTest {
 
-    // al igual que hice en JUnit5 creo qun BeforeEach para inicializar el repository y el service una
-    // sola vez antes de cada test y así no tener que repetir el codigo en cada test
+            /*
+            // al igual que hice en JUnit5 creo qun BeforeEach para inicializar el repository y el service una
+            // sola vez antes de cada test y así no tener que repetir el codigo en cada test
 
-    ExamRepository examRepository;
-    ExamService service;
-    QuestionRepository questionRepository;
+            ExamRepository examRepository;
+            QuestionRepository questionRepository;
+
+            ExamService service;
+
+            @BeforeEach
+            void setUp() {
+                examRepository = mock(ExamRepository.class); //esto crea una implementación al vuelo simulada de ExamRepository
+                questionRepository = mock(QuestionRepository.class);
+                service = new ExamServiceImpl(examRepository, questionRepository);
+            }
+             */
+
+    // ====== @Mock y @InjectMocks ======
+    // Nos cargamos lo  de arriba para sustituirlo por @Mock y @InjectMocks
+    // Es lo mismo pero con menos código y más limpio, la version de arriba es la version manual
+
+    @Mock
+    ExamRepository examRepository; // crea un mock de ExamRepository
+
+    @Mock
+    QuestionRepository questionRepository; // crea un mock de QuestionRepository
+
+    @InjectMocks
+    ExamServiceImpl service; // crea un mock de ExamServiceImpl y le inyecta los mocks de arriba
+    // tiene que ser ExamServiceImpl y no ExamService porque no puede instanciarse una interfaz
 
     @BeforeEach
     void setUp() {
-        examRepository = mock(ExamRepository.class); //esto crea una implementación al vuelo simulada de ExamRepository
-        questionRepository = mock(QuestionRepository.class);
-        service = new ExamServiceImpl(examRepository, questionRepository);
-
+        MockitoAnnotations.openMocks(this);  // Inicializa los mocks y realiza la inyección de dependencias
     }
+
 
     @Test
     void findExamByName() {
@@ -140,12 +185,22 @@ class ExamServiceImplTest {
     void testQuestionsExamVerifyEmptyList() {
         when(examRepository.findAll()).thenReturn(Collections.emptyList());
         when(questionRepository.findQuestionsByExamId(anyLong())).thenReturn(Data.QUESTIONS);
-        Exam exam = service.findExamByNameWithQuestions("Math2");
+        Exam exam = service.findExamByNameWithQuestions("Math");
         assertNull(exam); // si la lista es nula no se puede hacer el verify porque no se invocan los methods
         verify(examRepository).findAll();
         verify(questionRepository).findQuestionsByExamId(anyLong());
+        // este test siempre falla porque nunca habrá interaccion con el verify de questionRepository ya que
+        // la lista de examenes es vacia (Collections.emptyList()) y no se invocan los methods
     }
 
-    
+    @Test
+    void testSaveQuestions() {
+        when(examRepository.save(any(Exam.class))).thenReturn(Data.EXAM);
+        Exam exam = service.save(Data.EXAM);
+        assertNotNull(exam.getId());
+        assertEquals("Physics", exam.getName());
+        assertEquals(8L, exam.getId());
+        verify(examRepository).save(Data.EXAM);
+    }
 
 }
