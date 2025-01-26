@@ -9,27 +9,42 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.3</version>
+            <scope>test</scope>
         </dependency>
+
+        <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
+            <version>5.12.0</version> <!-- Última versión de Mockito -->
+            <scope>test</scope>
         </dependency>
+
+        <!-- Mockito JUnit 5 Integration -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.12.0</version>
+            <version>5.12.0</version> <!-- Última versión de Mockito -->
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Byte Buddy (dependencia explícita para asegurar compatibilidad) -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.14.13</version> <!-- Última versión de Byte Buddy -->
+            <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

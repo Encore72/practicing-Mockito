@@ -7,13 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 
 
-/**
+/*
  * Esta clase implementa la interfaz ExamRepository.
  * Sobrescribe el method findAll() para devolver una lista fija de objetos Exam que representan tres exámenes:
  * Matemáticas, Ciencias e Historia.
  * Propósito: Simula un repositorio de datos, como si los estuviera recuperando de una base de datos o API,
  * aunque aquí los datos están codificados directamente en la clase.
  */
+
+/* Al implementar Mokito, esta clase queda obsoleta y no se necesita más.
 
 public class ExamRepositoryImpl implements ExamRepository {
 
@@ -22,6 +24,9 @@ public class ExamRepositoryImpl implements ExamRepository {
         return Arrays.asList(new Exam(5L, "Math"),
                 new Exam(6L, "Science"),
                 new Exam(7L, "History"));
+
     }
 
 }
+
+*/
